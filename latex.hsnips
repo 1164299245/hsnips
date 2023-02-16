@@ -79,3 +79,4 @@ snippet `(b|p)mat_([1-9])([1-9])` "bmatrix" iA
 ``rv = gen_matrix(m[2],m[3])``
 \end{``rv = m[1]``matrix}
 endsnippet
+
