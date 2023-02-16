@@ -1,25 +1,49 @@
 global
-//矩阵函数================================================
 function gen_matrix(nrow,ncol){
     let rv = "";
     let order = 1;
-    for (var i = 1; i < nrow; i++){
+    for (var i = 1; i < nrow; i++){     //除了最后一行
         //rv += " ";
-        for (var j = 1; j < ncol; j++){
+        for (var j = 1; j < ncol; j++){     //除了最后一列
             rv += "$" + (order).toString() + " & ";
             order ++;
         }
-        rv += "$" + (order).toString() + "\\\\\\" + "\n";
+        rv += "$" + (order).toString() + "\\\\\\" + "\n";   //最后一列
         order ++;
     }
-    for (var k = 1; k < ncol; k++){
+    for (var k = 1; k < ncol; k++){     //最后一行
         rv += "$" + (order).toString() + " & ";
         order ++;
     }
     rv += "$" + (order).toString();
     return rv;
 }
+
+function cycle(arr,str){
+    var index = arr.indexOf(str) + 1;
+    if (index < arr.length){
+    return arr[index]
+    }
+    else{
+    return arr[0]
+    }
+}
 endglobal
+//矩阵==================================================
+priority 10
+snippet `(b|p)mat_([1-9])([1-9])` "bmatrix" iA
+\begin{``rv = m[1]``matrix}
+``rv = gen_matrix(m[2],m[3])``
+\end{``rv = m[1]``matrix}
+endsnippet
+//循环列表===============================================
+snippet `(\\delta|\\Delta)( ) ` "循环" Am
+``var r = ["\\delta","\\Delta"];
+rv = cycle(r,m[1])+m[2]``
+endsnippet
+snippet `` "description"  
+
+endsnippet
 //希腊字母=============================================
 snippet alf " α " Am
 \\alpha 
@@ -71,12 +95,4 @@ endsnippet
 //snippet `,([A-Za-z0-9])([A-Za-z0-9])` "分之" Am
 //\frac{``rv = m[1]``}{``rv = m[2]``}
 //endsnippet
-
-//矩阵==================================================
-priority 10
-snippet `(b|p)mat_([1-9])([1-9])` "bmatrix" iA
-\begin{``rv = m[1]``matrix}
-``rv = gen_matrix(m[2],m[3])``
-\end{``rv = m[1]``matrix}
-endsnippet
 
