@@ -1,0 +1,81 @@
+global
+//矩阵函数================================================
+function gen_matrix(nrow,ncol){
+    let rv = "";
+    let order = 1;
+    for (var i = 1; i < nrow; i++){
+        //rv += " ";
+        for (var j = 1; j < ncol; j++){
+            rv += "$" + (order).toString() + " & ";
+            order ++;
+        }
+        rv += "$" + (order).toString() + "\\\\\\" + "\n";
+        order ++;
+    }
+    for (var k = 1; k < ncol; k++){
+        rv += "$" + (order).toString() + " & ";
+        order ++;
+    }
+    rv += "$" + (order).toString();
+    return rv;
+}
+endglobal
+//希腊字母=============================================
+snippet alf " α " Am
+\\alpha 
+endsnippet
+snippet bta " β " Am
+\\beta 
+endsnippet
+snippet gma " γ" Am
+\\gamma 
+endsnippet
+snippet epsl "ε" Am
+\\varepsilon 
+endsnippet
+snippet dlt " δ " Am
+\\delta 
+endsnippet
+snippet cta " θ " Am
+\\theta 
+endsnippet
+snippet pai " π " Am
+\\pi 
+endsnippet
+snippet eta " η " Am
+\\eta 
+endsnippet
+snippet lmd " λ " Am
+\\lambda 
+endsnippet
+snippet rou " ρ " Am
+\\rou 
+endsnippet
+snippet fai " φ " Am
+\\varphi 
+endsnippet
+//下标===================================================
+snippet `([A-Za-z]|\\alpha )(\d)` " a1 → a_1 " Am
+``rv = m[1]``_``rv = m[2]``
+endsnippet
+snippet `([A-Za-z]|\\alpha )_(\d \d)` "a_1 → a_{12}" Am
+``rv = m[1]``_{``rv = m[2]``}
+endsnippet
+
+// _下标 转 ^上标
+snippet `([A-Za-z]|\\alpha )_(\d)w` "a_1 → a^1" Am
+``rv = m[1]``^``rv = m[2]``
+endsnippet
+
+//分数==================================================
+//snippet `,([A-Za-z0-9])([A-Za-z0-9])` "分之" Am
+//\frac{``rv = m[1]``}{``rv = m[2]``}
+//endsnippet
+
+//矩阵==================================================
+priority 10
+snippet `(b|p)mat_([1-9])([1-9])` "bmatrix" iA
+\begin{``rv = m[1]``matrix}
+``rv = gen_matrix(m[2],m[3])``
+\end{``rv = m[1]``matrix}
+endsnippet
