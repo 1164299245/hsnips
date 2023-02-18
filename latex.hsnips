@@ -1,9 +1,12 @@
+//  A：自动展开
+//  i: 词内展开*。默认情况下，触发器仅在前面带有空格字符时才匹配触发。如果设置 为 i，则不管前面的字符如何，都会触发带有此选项的代码段，例如，可以在单词的中间触发代码段。
+//  w: 单词边界*。使用此选项时，触发器将在单词边界处匹配。
+
 global
-function gen_matrix(nrow,ncol){
+function normal_matrix(nrow,ncol){
     let rv = "";
     let order = 1;
     for (var i = 1; i < nrow; i++){     //除了最后一行
-        //rv += " ";
         for (var j = 1; j < ncol; j++){     //除了最后一列
             rv += "$" + (order).toString() + " & ";
             order ++;
@@ -19,6 +22,31 @@ function gen_matrix(nrow,ncol){
     return rv;
 }
 
+function diag_matrix(n){
+    let rv = "";
+    let order = 1;
+    for (var i = 1; i < n; i++){
+        for (var j = 1; j < n; j++)
+            if (j == i){
+                rv += "$" + (order).toString() + " & ";
+                order++
+            }
+            else {
+                rv += " & "
+            }
+        rv += "\\\\\\" + "\n"
+    }
+    order++;
+    for (var k = 1; k <= n; k++)
+    if (k != n){
+    rv += " & "
+    }
+    else{
+        rv += "$" + (order).toString()
+    }
+return rv;
+}
+
 function cycle(arr,str){
     var index = arr.indexOf(str) + 1;
     if (index < arr.length){
@@ -31,68 +59,147 @@ function cycle(arr,str){
 endglobal
 //矩阵==================================================
 priority 10
-snippet `(b|p)mat_([1-9])([1-9])` "bmatrix" iA
-\begin{``rv = m[1]``matrix}
-``rv = gen_matrix(m[2],m[3])``
-\end{``rv = m[1]``matrix}
+snippet `mx_([1-9])([1-9])` "矩阵" iA
+\begin{pmatrix}
+``rv = normal_matrix(m[1],m[2])``
+\end{pmatrix}
 endsnippet
+
+priority 10
+snippet `det_([1-9])([1-9])` "矩阵" iA
+\begin{vmatrix}
+``rv = normal_matrix(m[1],m[2])``
+\end{vmatrix}
+endsnippet
+
+priority 10
+snippet `diag([1-9])` "bmatrix" iAm
+\begin{matrix}
+``rv = diag_matrix(m[1])``
+\end{matrix}
+endsnippet
+
+priority 10
+snippet `mx([a-z])([a-z])` "矩阵" iAm
+\begin{matrix}
+$1_{11} & $1_{12} & \\cdots & $1_{1``rv = m[2]``}\\\\
+$1_{21} & $1_{22} & \\cdots & $1_{2``rv = m[2]``}\\\\
+\\vdots & \\vdots & \\ddots & \\vdots\\\\
+$1_{``rv = m[1]``1} & $1_{``rv = m[1]``2} & \\cdots & $1_{``rv = m[1]+m[2]``}
+\end{matrix}
+endsnippet
+
+
 //循环列表===============================================
 snippet `(\\delta|\\Delta)( ) ` "循环" Am
 ``var r = ["\\delta","\\Delta"];
 rv = cycle(r,m[1])+m[2]``
 endsnippet
-snippet `` "description"  
 
+snippet ... "..." iAm
+\cdots 
 endsnippet
+snippet `(\\cdots|\\ddots|\\vdots)( ) ` "循环" Am
+``var r = ["\\cdots","\\ddots","\\vdots"];
+rv = cycle(r,m[1])+m[2]``
+endsnippet
+
+//汉字=================================================
+snippet `(?<=[一-龥，。？！；：‘’“”])v` "汉字后面自动math" iA
+ $ ${1:^_^} $ $0
+endsnippet
+
+//snippet `(?<=[一-龥，。？！；：‘’“”] [\$])v(.)` "汉字后面自动math" iAm ``rv = m[1]`` endsnippet
+
 //希腊字母=============================================
-snippet alf " α " Am
+snippet alf " α " iAm
 \\alpha 
 endsnippet
-snippet bta " β " Am
+snippet bta " β " iAm
 \\beta 
 endsnippet
-snippet gma " γ" Am
+snippet gma " γ" iAm
 \\gamma 
 endsnippet
-snippet epsl "ε" Am
+snippet epsl "ε" iAm
 \\varepsilon 
 endsnippet
-snippet dlt " δ " Am
+snippet dlt " δ " iAm
 \\delta 
 endsnippet
-snippet cta " θ " Am
+snippet cta " θ " iAm
 \\theta 
 endsnippet
-snippet pai " π " Am
+snippet pai " π " iAm
 \\pi 
 endsnippet
-snippet eta " η " Am
+snippet eta " η " iAm
 \\eta 
 endsnippet
-snippet lmd " λ " Am
+snippet lmd " λ " iAm
 \\lambda 
 endsnippet
-snippet rou " ρ " Am
+snippet rou " ρ " iAm
 \\rou 
 endsnippet
-snippet fai " φ " Am
+snippet fai " φ " iAm
 \\varphi 
 endsnippet
 //下标===================================================
-snippet `([A-Za-z]|\\alpha )(\d)` " a1 → a_1 " Am
+snippet `([A-Za-z]|\\alpha |\\beta |\\lambda )(\d|i)` " a1 → a_1 " Am
 ``rv = m[1]``_``rv = m[2]``
 endsnippet
-snippet `([A-Za-z]|\\alpha )_(\d \d)` "a_1 → a_{12}" Am
+snippet `([A-Za-z]|\\alpha |\\beta |\\lambda )_(\d \d)` "a_1 → a_{12}" Am
 ``rv = m[1]``_{``rv = m[2]``}
 endsnippet
 
 // _下标 转 ^上标
-snippet `([A-Za-z]|\\alpha )_(\d)w` "a_1 → a^1" Am
+snippet `([A-Za-z]|\\alpha |\\beta |\\lambda )_(\d)w` "a_1 → a^1" Am
 ``rv = m[1]``^``rv = m[2]``
 endsnippet
 
-//分数==================================================
-//snippet `,([A-Za-z0-9])([A-Za-z0-9])` "分之" Am
-//\frac{``rv = m[1]``}{``rv = m[2]``}
-//endsnippet
+//分数===========================================
+snippet `,([\\\(\)\{\}A-Za-z0-9\+-^_! ]+)fz([\\\(\)\{\}A-Za-z0-9+-^_! ]+),` "分之" Am
+\frac{``rv = m[2]``}{``rv = m[1]``}
+endsnippet
+snippet `(\d)\/(\d)` "分之" Am
+\frac{``rv = m[1]``}{``rv = m[2]``}
+endsnippet
+//根号
+priority 10
+snippet `gh(\d)` "根号" Am
+\sqrt{``rv = m[1]``}
+endsnippet
 
+//移除空格==================================
+priority 100
+snippet `([^ ])(\\\+|\-|\=|\<|\>)` "前面加空格" iA
+``rv = m[1] + " " + m[2]``
+endsnippet
+priority 100
+snippet `(\\\+|\-|\=|\<|\>)([^ ])` "后面加空格" iA
+``rv = m[1] + " " + m[2]``
+endsnippet
+
+//环境======================================
+snippet `^\&\&\&` "多行公式" iA
+\begin{equation*} \begin{aligned}%↓↓↓↓↓
+$0
+\end{aligned} \end{equation*}%↑↑↑↑↑↑↑↑↑
+endsnippet
+
+snippet `^1\.  ` "enumerate" iA
+\begin{enumerate}
+\item $0
+\end{enumerate}
+endsnippet
+
+snippet `^0\.  ` "itemize" iA
+\begin{enumerate}
+\item $0
+\end{enumerate}
+endsnippet
+
+snippet `^(\\item.+\\\\\\)$` "item" iA
+``rv = m[1] + "\n"``\item $0
+endsnippet
