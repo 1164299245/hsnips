@@ -21,7 +21,6 @@ function normal_matrix(nrow,ncol){
     rv += "$" + (order).toString();
     return rv;
 }
-
 function diag_matrix(n){
     let rv = "";
     let order = 1;
@@ -44,9 +43,8 @@ function diag_matrix(n){
     else{
         rv += "$" + (order).toString()
     }
-return rv;
+    return rv;
 }
-
 function cycle(arr,str){
     var index = arr.indexOf(str) + 1;
     if (index < arr.length){
@@ -64,21 +62,18 @@ snippet `mx_([1-9])([1-9])` "矩阵" iA
 ``rv = normal_matrix(m[1],m[2])``
 \end{pmatrix}
 endsnippet
-
 priority 10
 snippet `det_([1-9])([1-9])` "矩阵" iA
 \begin{vmatrix}
 ``rv = normal_matrix(m[1],m[2])``
 \end{vmatrix}
 endsnippet
-
 priority 10
 snippet `diag([1-9])` "bmatrix" iAm
 \begin{matrix}
 ``rv = diag_matrix(m[1])``
 \end{matrix}
 endsnippet
-
 priority 10
 snippet `mx([a-z])([a-z])` "矩阵" iAm
 \begin{matrix}
@@ -91,11 +86,14 @@ endsnippet
 
 
 //循环列表===============================================
-snippet `(\\delta|\\Delta)( ) ` "循环" Am
+snippet `(\\delta|\\Delta)( ) ` "循环" iAm
 ``var r = ["\\delta","\\Delta"];
 rv = cycle(r,m[1])+m[2]``
 endsnippet
-
+snippet `(\\to|\\nrightarrow)( ) ` "循环" iAm
+``var r = ["\\to","\\nrightarrow"];
+rv = cycle(r,m[1])+m[2]``
+endsnippet
 snippet ... "..." iAm
 \cdots 
 endsnippet
@@ -103,14 +101,10 @@ snippet `(\\cdots|\\ddots|\\vdots)( ) ` "循环" Am
 ``var r = ["\\cdots","\\ddots","\\vdots"];
 rv = cycle(r,m[1])+m[2]``
 endsnippet
-
 //汉字=================================================
 snippet `(?<=[一-龥，。？！；：‘’“”])v` "汉字后面自动math" iA
- $ ${1:^_^} $ $0
+ $ ${1: } $ $0
 endsnippet
-
-//snippet `(?<=[一-龥，。？！；：‘’“”] [\$])v(.)` "汉字后面自动math" iAm ``rv = m[1]`` endsnippet
-
 //希腊字母=============================================
 snippet alf " α " iAm
 \\alpha 
@@ -145,61 +139,202 @@ endsnippet
 snippet fai " φ " iAm
 \\varphi 
 endsnippet
+snippet ksi "ξ" iAm 
+\\xi 
+endsnippet
+\\符号======================================================
+priority1000
+snippet ， "逗号" iA 
+,
+endsnippet
+priority1000
+snippet 。 "句号" iA 
+.
+endsnippet
+priority1000
+snippet 、 "句号" iA 
+\
+endsnippet
+snippet czi "存在" iAm
+\\exists 
+endsnippet
+snippet ryi "任意" iAm
+\\forall 
+endsnippet
+snippet wq "∞" iAm
+\\infty 
+endsnippet
+snippet dianc "点乘" iAm
+\\cdot 
+endsnippet
+snippet chac "叉乘" iAm
+\\times 
+endsnippet
+snippet fuhe "复合" iAm
+\\circ 
+endsnippet
+snippet tuichu "==>" iAm
+\\implies 
+endsnippet
+snippet pian "偏微分partial" iAm
+\\partial 
+endsnippet
+snippet `\\partial suanzi` "偏微分算子" iAm
+\\frac{\partial}{\partial $1} $0
+endsnippet
+snippet `(^|[^\\])(in|sin|cos|tan|cot|csc|ln|min|max|iff|to|geq|leq)` " " iAm
+``rv = m[1] + "\\" + m[2] + " "``
+endsnippet
+snippet `d([x|y|t|u])` "dx" iAm
+~\\mathrm{d}``rv = m[1]``
+endsnippet
+snippet `f([x|y|t|u])` "description" iAm
+f(``rv = m[1]``)
+endsnippet
+
+//后缀符号==================================
+snippet `([A-Za-z]|\\[A-Za-z]+ )vec` "向量" iAm
+\boldsymbol{``rv = m[1]``}
+endsnippet
+snippet `([A-Za-z])mrm` "向量" iAm
+\mathrm{``rv = m[1]``}
+endsnippet
+snippet `([A-Z])mbb` "向量" iAm
+\mathbb{``rv = m[1]``}
+endsnippet
+
+
 //下标===================================================
-snippet `([A-Za-z]|\\alpha |\\beta |\\lambda )(\d|i)` " a1 → a_1 " Am
+snippet `([A-Za-z]|\\alpha |\\beta |\\lambda )(\d)` " a1 → a_1 " iAm
 ``rv = m[1]``_``rv = m[2]``
 endsnippet
-snippet `([A-Za-z]|\\alpha |\\beta |\\lambda )_(\d \d)` "a_1 → a_{12}" Am
+snippet `([A-Za-z]|\\alpha |\\beta |\\lambda )_(\d \d)` "a_1 → a_{12}" iAm
 ``rv = m[1]``_{``rv = m[2]``}
+endsnippet
+snippet xiamian "正下方" iAm
+_\limits{$0}
+endsnippet
+
+snippet __ "_{}" iAm 
+_{$0}
+endsnippet
+snippet ^^ "_{}" iAm 
+^{$0}
 endsnippet
 
 // _下标 转 ^上标
-snippet `([A-Za-z]|\\alpha |\\beta |\\lambda )_(\d)w` "a_1 → a^1" Am
+snippet `([A-Za-z]|\\alpha |\\beta |\\lambda )_(\d)w` "a_1 → a^1" iAm
 ``rv = m[1]``^``rv = m[2]``
 endsnippet
-
 //分数===========================================
-snippet `,([\\\(\)\{\}A-Za-z0-9\+-^_! ]+)fz([\\\(\)\{\}A-Za-z0-9+-^_! ]+),` "分之" Am
+snippet `#([\\\(\)\{\}A-Za-z0-9\+-^_! ]+)fz_?([\\\(\)\{\}A-Za-z0-9+-^_! ]+)#` "分之" iAm
 \frac{``rv = m[2]``}{``rv = m[1]``}
 endsnippet
-snippet `(\d)\/(\d)` "分之" Am
-\frac{``rv = m[1]``}{``rv = m[2]``}
+//求和===========================================
+snippet `(i|m|n)#(.+)#(.+)qh` " Σ " iAm
+\sum_{``rv = m[1]``=``rv = m[2]``}^{``rv = m[3]``}
 endsnippet
+//积分===========================================
+snippet `#(.+)#(.+)jf` " ∫ " iAm
+\int_{``rv = m[1]``}^{``rv = m[2]``}
+endsnippet
+
 //根号
 priority 10
-snippet `gh(\d)` "根号" Am
+snippet `gh(\d)` "根号" iAm
 \sqrt{``rv = m[1]``}
 endsnippet
+//等号上写字
+priority100
+snippet `eqeq` "xlonequal" iAm 
+\xlongequal{$0}
+endsnippet
+
+
+//括号======================================
+snippet ()() "自动高度括号" iAm
+\left( $0 \right)
+endsnippet
+snippet [][] "自动高度括号" iAm
+\left[ $0 \right]
+endsnippet
+snippet {}{} "自动高度括号" iAm
+\\left\\{ $0 \\right\\}
+endsnippet
+snippet vert "|范数|" iAm
+\Vert $0 \Vert
+endsnippet
+snippet || "自动高度||" iAm
+\left| $0 \right|
+endsnippet
+
 
 //移除空格==================================
 priority 100
-snippet `([^ ])(\\\+|\-|\=|\<|\>)` "前面加空格" iA
+snippet `([^ ])(\+|\-|\=|\<|\>)` "前面加空格" iAm
 ``rv = m[1] + " " + m[2]``
 endsnippet
 priority 100
-snippet `(\\\+|\-|\=|\<|\>)([^ ])` "后面加空格" iA
+snippet `(\+|\-|\=|\<|\>)([^ ])` "后面加空格" iAm
 ``rv = m[1] + " " + m[2]``
 endsnippet
 
 //环境======================================
-snippet `^\&\&\&` "多行公式" iA
+snippet `^beg$` "环境" iA
+\begin{$1}
+$0
+\end{$1}
+endsnippet
+
+snippet `^\&\&\&` "多行公式（带对齐）" iA
 \begin{equation*} \begin{aligned}%↓↓↓↓↓
 $0
 \end{aligned} \end{equation*}%↑↑↑↑↑↑↑↑↑
 endsnippet
 
-snippet `^1\.  ` "enumerate" iA
-\begin{enumerate}
+snippet `^1\. ` "enumerate" iA
+\begin{enumerate}[1.]
 \item $0
 \end{enumerate}
 endsnippet
 
-snippet `^0\.  ` "itemize" iA
-\begin{enumerate}
+snippet `^0\. ` "itemize" iA
+\begin{itemize}
 \item $0
-\end{enumerate}
+\end{itemize}
 endsnippet
 
-snippet `^(\\item.+\\\\\\)$` "item" iA
-``rv = m[1] + "\n"``\item $0
+
+
+//选中改变==============================================================
+snippet gray "灰色" iA
+\\textcolor{lightgray}{${VISUAL}}
+endsnippet
+snippet green "绿色" iA
+\\textcolor{green}{${VISUAL}}
+endsnippet
+snippet red "灰色" iA
+\\textcolor{red}{${VISUAL}}
+endsnippet
+snippet blue "蓝色" iA
+\\textcolor{blue}{${VISUAL}}
+endsnippet
+snippet wkh "上括号" iAm
+\\overbracket{${VISUAL}}^{$0}
+endsnippet
+snippet skh "下括号" iAm
+\\underbracket{${VISUAL}}_{$0}
+endsnippet
+snippet txt "text" iAm
+\\text{$0}
+endsnippet
+//跳转==============================================================
+snippet lab " " iA
+\label{$0}
+endsnippet
+snippet href " " iA
+\hyperref[${1:label}]{${1:text}}$0
+endsnippet
+snippet fengexian " " iA
+\noindent \hrulefill
 endsnippet
